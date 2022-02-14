@@ -1,19 +1,25 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
+import { Greeter } from "../typechain";
 
 describe("Greeter", function () {
-  it("Should return the new greeting once it's changed", async function () {
+  let contract: Greeter;
+
+  beforeEach(async () => {
     const Greeter = await ethers.getContractFactory("Greeter");
-    const greeter = await Greeter.deploy("Hello, world!");
-    await greeter.deployed();
+    contract = await Greeter.deploy();
+  });
 
-    expect(await greeter.greet()).to.equal("Hello, world!");
+  describe("sum", () => {
+    it("should return 5 when given parameters are 2 and 3", async function () {
+      await contract.deployed();
 
-    const setGreetingTx = await greeter.setGreeting("Hola, mundo!");
+      const sum = await contract.sum(2, 3);
 
-    // wait until the transaction is mined
-    await setGreetingTx.wait();
-
-    expect(await greeter.greet()).to.equal("Hola, mundo!");
+      expect(sum).to.be.not.undefined;
+      expect(sum).to.be.not.null;
+      expect(sum).to.be.not.NaN;
+      expect(sum).to.equal(5);
+    });
   });
 });
